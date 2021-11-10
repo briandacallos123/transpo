@@ -1,22 +1,38 @@
 import React, {useState} from 'react'
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text,Alert, TextInput, TouchableOpacity, View } from 'react-native'
 import Header from '../header'
 import Logo from '../logo'
 import cashout from '../../../../../images/cashout.png'
 import Cashout from './Cashout'
+import { firestore } from '../../../../../firebase'
 
 const Driver = ({route, navigation}) => {
-    const {data} = route.params
+    const {data, reRender} = route.params
     const [driverData, setData] = useState(data)
     // const {data} = routes.params
     // console.log({data});
 //    console.log(myData);
-
+    
     const cashOut = () =>{
         navigation.navigate('Cashout',{
             data:driverData
         })
     }
+    if(reRender){
+        firestore.collection('commuters').where('email','==',driverData.email).get()
+        .then((res)=>{
+            res.docs.forEach((doc)=>{
+                setData(doc.data())
+            })
+        })
+    }
+    const ViewHistory = () => {
+       
+        navigation.navigate('History',{
+            data:driverData
+        })
+    }
+
     return (
         <View style={{
             flex:1,
@@ -35,7 +51,9 @@ const Driver = ({route, navigation}) => {
                  }}>
                     <TouchableOpacity style={{
                         width:190
-                    }}>
+                    }}
+                    onPress={ViewHistory}
+                    >
                         <Text style={{
                             color:"#948D8D",
                             fontSize:17

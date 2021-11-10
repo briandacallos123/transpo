@@ -15,26 +15,40 @@ import Header from './header'
 let phoneNumber = ""
 
 const IndexSub = ({route, navigation}) => {
-    console.log("route: ",route);
+    const {datas} = route.params
+    const {render} = route.params
     const [data, setData] = useState([])
-    
+    const [email, setEmail] = useState(retEmail())
+    const [renderData, setRender] = useState(render)
+    console.log("datas: ",datas);
+
     useEffect(()=>{
         findUser()
-    },[])
+    },[datas])
+    console.log(datas);
+
+ 
+    
 
     const findUser = () =>{
-        firestore.collection('commuters').where('email', '==', retEmail()).get()
+        firestore.collection('commuters').where('email','==',email).get()
         .then((res)=>{
-            res.docs.forEach(doc => {
+            res.docs.forEach((doc)=>{
                 setData(doc.data())
-                phoneNumber = doc.data().phoneNumber
             })
-           
         })
     }
+    // if(datas){
+    //     findUser()
+    // }
+    console.log("datas: ", datas);
+    
     const cashin = () => {
-        navigation.navigate("Cashin")
+        navigation.navigate("Cashin",{
+            data:data
+        })
     }
+
     return (
         <View style={styles.container}>
             <View style={{

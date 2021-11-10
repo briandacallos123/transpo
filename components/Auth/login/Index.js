@@ -20,11 +20,11 @@ const Login = ({navigation}) => {
     const logMeIn = () =>{
         auth.signInWithEmailAndPassword(email, password)
         .then((userCredential) => {
-            // setEmail("")
-            // setPassword("")
+            setEmail("")
+            setPassword("")
             const email = userCredential.user.email
             myEmail = email
-            // navigation.navigate('Index101')
+           
             getDriver(email)
             
             
@@ -41,8 +41,14 @@ const Login = ({navigation}) => {
 
         // kapag di sya driver
         if (snapshot.empty) {
-            console.log('Wala');
-            return
+
+
+            navigation.navigate('Index101',{
+                screen:'main',
+                params:{
+                    render:false
+                }
+            })
           }  
 
         //   kapag driver sya
@@ -54,6 +60,7 @@ const Login = ({navigation}) => {
             })
             
         });
+        
     }
 
     const driverSya = () =>{
@@ -84,6 +91,7 @@ const Login = ({navigation}) => {
                     style={styles.TextInput}
                     onChangeText={(e)=>setPassword(e)}
                     value={password}
+                    secureTextEntry={true}
                     />
                 </View>
                 <TouchableOpacity style={styles.btnChill}>

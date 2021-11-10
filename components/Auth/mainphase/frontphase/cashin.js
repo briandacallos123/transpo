@@ -2,13 +2,18 @@ import React, {useState, useEffect} from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity} from 'react-native'
 import Header from './header'
 import Logo from './logo'
+import Receipt from './DriverPhase/Receipt'
 
-const Cashin = () => {
+const Cashin = ({route, navigation}) => {
+    // console.log(route.params);
     const [amount, setAmount] = useState(null)
 
     const cashin = () =>{
         if(amount){
-            console.log("may laman");
+            navigation.navigate('FinalReceipt', {
+                data:route.params,
+                amount:amount
+            })
         }else{
             console.log("walang laman");
         }

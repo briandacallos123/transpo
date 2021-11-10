@@ -7,7 +7,7 @@ import cashout from '../../../../../images/cashout.png'
 const Cashout = ({route, navigation}) => {
     const {data} = route.params
     const [driverData, setData] = useState(data)
-    const [myWidth, setWithdraw] = useState(null)
+    const [myWidth, setWithdraw] = useState("")
     // const {data} = routes.params
     // console.log({data});
 //    console.log(myData);
@@ -17,7 +17,7 @@ const Cashout = ({route, navigation}) => {
         // console.log(typeof(Number(myWidth)));
         let myVal = Number(myWidth)
        
-        if(driverData.balance > myVal){
+        if(!(myWidth == "") && driverData.balance >= myVal){
             let total = driverData.balance - myVal
             // console.log("success");
             navigation.navigate("Receipt",{
@@ -28,6 +28,12 @@ const Cashout = ({route, navigation}) => {
             Alert.alert("Sorry your balance isn't enough")
         }
        
+    }
+
+    const ViewHistory = () => {
+        navigation.navigate('History',{
+            data:driverData
+        })
     }
 
     return (
@@ -48,7 +54,10 @@ const Cashout = ({route, navigation}) => {
                  }}>
                     <TouchableOpacity style={{
                         width:190
-                    }}>
+                    }}
+                    onPress={ViewHistory}
+                    
+                    >
                         <Text style={{
                             color:"#948D8D",
                             fontSize:17

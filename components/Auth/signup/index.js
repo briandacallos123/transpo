@@ -25,7 +25,7 @@ const Register = ({navigation}) => {
         driver:false,
         phoneNumber:null,
         licenseNumber:"",
-        balance:0.00
+        balance:500
     })
     
     const submit = () => {
@@ -40,18 +40,35 @@ const Register = ({navigation}) => {
         .then((user)=>{
             const myId = user.user.uid
             const data = {
-                    email:info.email,
-                    name:info.name,
-                    address:info.address,
-                    driver:info.driver,
-                    password:info.password,
-                    phoneNumber:info.phoneNumber,
-                    licenseNumber:info.licenseNumber,
-                    balance:info.balance,
-                    id:myId
-            }
+                email:info.email,
+                name:info.name,
+                address:info.address,
+                driver:info.driver,
+                password:info.password,
+                phoneNumber:info.phoneNumber,
+                licenseNumber:info.licenseNumber,
+                balance:info.balance,
+                id:myId,
+                
+             }
+            const data2 = {
+                email:info.email,
+                name:info.name,
+                address:info.address,
+                driver:info.driver,
+                password:info.password,
+                phoneNumber:info.phoneNumber,
+                licenseNumber:info.licenseNumber,
+                balance:info.balance,
+                id:myId,
+                transaction:[
+                    {}
+                ]
+             }
             const usersRef = firestore.collection('commuters')
-            usersRef.doc(myId).set(data)
+            const setMe = (info.driver ? data2 : data)
+            // console.log(setMe);
+            usersRef.doc(myId).set(setMe)
             .then(()=>{
                 console.log("success register");
                 navigation.navigate("login")
@@ -77,7 +94,7 @@ const Register = ({navigation}) => {
             //     console.log(e.message);
             // })
         }).catch((e)=>{
-            console.log(e.message);
+            Alert.alert(e.message)
         })
     }
    
@@ -132,6 +149,7 @@ const Register = ({navigation}) => {
                     placeholder="Password" 
                     style={styles.TextInput}
                     onChangeText={(e)=>setInfo({...info,password:e})}
+                    secureTextEntry={true}
                     />
                 </View>
                 <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-around'}}>

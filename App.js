@@ -16,6 +16,9 @@ import Sample from './components/Auth/Sample'
 import Driver from './components/Auth/mainphase/frontphase/DriverPhase/Driver';
 import Cashout from './components/Auth/mainphase/frontphase/DriverPhase/Cashout';
 import Receipt from './components/Auth/mainphase/frontphase/DriverPhase/Receipt';
+import History from './components/Auth/mainphase/frontphase/DriverPhase/History';
+import FinalReceipt from './components/Auth/mainphase/frontphase/FinalReceipt';
+
 export default function App() {
 
   React.useEffect(()=>{
@@ -72,6 +75,8 @@ if (Platform.OS === 'android') {
        <Stack.Screen name="Driver" component={Driver}/>
        <Stack.Screen name="Cashout" component={Cashout}/>
        <Stack.Screen name="Receipt" component={Receipt}/>
+       <Stack.Screen name="History" component={History}/>
+       <Stack.Screen name="FinalReceipt" component={FinalReceipt}/>
      </Stack.Navigator>
    </NavigationContainer>
   );

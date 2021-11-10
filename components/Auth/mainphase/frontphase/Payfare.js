@@ -7,6 +7,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import Logo from './logo'
 import { FontAwesome } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import Receipt from './Receipt'
 
 const hayt = Math.round(Dimensions.get('window').height)
 const Payfare = ({navigation}) => {
@@ -24,13 +25,15 @@ const Payfare = ({navigation}) => {
     const [driverEmail, setDriverEmail] = useState([])
     const [index, setIndex] = useState(0)
     const [fee, setFee] = useState(0)
-    
+    const [transaction, setTransaction] = useState(driverEmail.transaction)
+    const [rawt, setRawt] = useState("")
+
+
     useEffect(()=>{
         findUser()
-        ewan()
     },[index])
 
-    // console.log("data to: ", data);
+   
 
     const findUser = () =>{
 
@@ -50,30 +53,47 @@ const Payfare = ({navigation}) => {
         .then((res)=>{
             res.docs.forEach((doc)=>{
                 setDriverEmail(doc.data())
-                
+                setTransaction(doc.data().transaction)
+                whereDriver()
             })
-            
         })
         .catch((e)=>{
             console.log("error: ", e.message);
         })
-        // add to driver
+       
     }
-    // if(driverEmail){
-    //     getDriverInfo()
-    // }else{
-    //     // console.log("driver again: ",driverEmail.id);
-    //     getDriverInfo()
-    // }
-    const ewan = () =>{
-        if(driverEmail){
-            // updateDriver()
-            // console.log("meron na");
-            // console.log(driverEmail.id);
-            updateDriver()
-        }else{
-            console.log("wala pa");
+   
+    // console.log("typeof: ", typeof(transaction));
+    const whereDriver = async() => {
+        const ewan = firestore.collection('commuters');
+        
+        let myBalance = driverEmail.balance
+        let total = myBalance + amount
+  
+
+        const newData = {
+            name:data.name,
+            route:rawt,
+            fee:amount
         }
+
+        const newDatam = [...transaction, newData]
+        // console.log(newDatam);
+        const snapshot = await ewan.doc(driverEmail.id).update({
+            balance:total,
+            transaction:newDatam
+        })
+
+        .then(()=>{
+            console.log("success");
+      
+            navigation.navigate("Receipt",{
+                data:data
+            })
+        }).catch((e)=>{
+            console.log(e.message);
+        })
+
     }
 
     const updateDriver = () => {
@@ -83,15 +103,13 @@ const Payfare = ({navigation}) => {
         }).then(()=>{
               
               setIndex(index+1)
-              navigation.navigate("Receipt")
+             
               console.log("success");
         })
     }
 
 
     const pay = () => {
-    
-      
         if(email){
             firestore.collection('commuters').where("email", "==", email).where('driver',"==",true).get()
             .then((snapshot) => {
@@ -107,6 +125,8 @@ const Payfare = ({navigation}) => {
                     }).then(()=>{
                       
                         getDriverInfo()
+                        setIndex(index+1)
+                        
                         // updateDriver()
                       
                     }).catch((e)=>{
@@ -162,14 +182,48 @@ const Payfare = ({navigation}) => {
         else if(a ==  "Concepcion - Monumento" || a ==  "Tangos - Monumento"){
             setAmount(15)
         }
+        switch(a){
+            case "Concepcion - Hulo":
+                setRawt("Concepcion - Hulo")
+                break;
+            case "Tangos - Sipac":
+                setRawt("Tangos - Sipac")
+                break;
+            case "Concepcion - Bayan":
+                setRawt("Concepcion - Bayan")
+                break;
+            case "Concepcion - Mc":
+                setRawt("Concepcion - Mc")
+                break;
+            case "Tangos - Mc":
+                setRawt("Tangos - Mc")
+                break;
+            case "Concepcion - Monumento":
+                setRawt("Concepcion - Monumento")
+                break;
+            case "Tangos - Monumento":
+                setRawt("Tangos - Monumento")
+                break;
+            case "Tangos - C4":
+                setRawt("Tangos - C4")
+                break;
+        }
     }
 
+    const home = () => {
+        navigation.navigate('main',{
+            datas:data,
+            render:true
+        })
+    }
    
     
     return (
         <View style={styles.container}>
-            <View style={{alignItems:'center', position:'relative',
-        top:100}}>
+            <View style={{
+                flex:1,
+                justifyContent:'flex-end',
+            }}>
                 <Header/>
               
             </View> 
@@ -266,7 +320,7 @@ const styles = StyleSheet.create({
         flex:1,
         padding:10,
         height:hayt,
-        justifyContent:'space-between'
+        justifyContent:'space-around'
     },
     TextInput:{
         borderWidth:1,

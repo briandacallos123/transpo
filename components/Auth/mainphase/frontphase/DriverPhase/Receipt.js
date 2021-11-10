@@ -15,7 +15,10 @@ const Receipt = ({route, navigation}) => {
             balance:total
         })
         .then(()=>{
-            navigation.navigate('Driver')
+            navigation.navigate('Driver',{
+                data:myData,
+                reRender:true
+            })
         })
        
     }
